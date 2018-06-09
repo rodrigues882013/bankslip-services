@@ -15,6 +15,14 @@ public class BankSlipDTO implements Serializable {
     private String status;
     private Double fine;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Date getDueDate() {
         return dueDate;
     }

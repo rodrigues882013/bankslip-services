@@ -20,6 +20,16 @@ public class BankSlip {
     @Column(name = "customer")
     private String customer;
 
+    private String status;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Date getDueDate() {
         return dueDate;
     }
@@ -42,5 +52,13 @@ public class BankSlip {
 
     public void setCustomer(String customer) {
         this.customer = customer;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
