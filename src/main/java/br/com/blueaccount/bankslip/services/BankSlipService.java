@@ -1,6 +1,7 @@
 package br.com.blueaccount.bankslip.services;
 
 import br.com.blueaccount.bankslip.domain.model.BankSlip;
+import br.com.blueaccount.bankslip.domain.model.constants.StatusEnumType;
 import br.com.blueaccount.bankslip.domain.repository.BankSlipRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class BankSlipService {
         return bankSlipRepository.save(bankSlip);
     }
 
-    public BankSlip updateStatus(String id, String status) {
+    public BankSlip updateStatus(String id, StatusEnumType status) {
         logger.info("updateStatus: Update banksplit with status: `{}`", status);
         BankSlip entity = find(id);
 

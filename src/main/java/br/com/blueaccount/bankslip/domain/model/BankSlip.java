@@ -1,5 +1,7 @@
 package br.com.blueaccount.bankslip.domain.model;
 
+import br.com.blueaccount.bankslip.domain.model.constants.StatusEnumType;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,7 +22,8 @@ public class BankSlip {
     @Column(name = "customer")
     private String customer;
 
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private StatusEnumType status;
 
     public String getId() {
         return id;
@@ -54,11 +57,11 @@ public class BankSlip {
         this.customer = customer;
     }
 
-    public String getStatus() {
+    public StatusEnumType getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusEnumType status) {
         this.status = status;
     }
 }

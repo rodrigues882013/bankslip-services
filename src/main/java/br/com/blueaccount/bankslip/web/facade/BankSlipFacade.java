@@ -1,7 +1,7 @@
 package br.com.blueaccount.bankslip.web.facade;
 
 import br.com.blueaccount.bankslip.domain.model.BankSlip;
-import br.com.blueaccount.bankslip.domain.model.StatusEnumType;
+import br.com.blueaccount.bankslip.domain.model.constants.StatusEnumType;
 import br.com.blueaccount.bankslip.exception.ServiceException;
 import br.com.blueaccount.bankslip.services.BankSlipService;
 import br.com.blueaccount.bankslip.web.dto.BankSlipDTO;
@@ -50,7 +50,7 @@ public class BankSlipFacade {
         validateParameter(request, "Status Request");
         validateParameter(id, "id");
 
-        BankSlip bankSlip = bankSlipService.updateStatus(id, request.getStatus());
+        BankSlip bankSlip = bankSlipService.updateStatus(id, StatusEnumType.valueOf(request.getStatus()));
 
         if (bankSlip == null) {
             logger.error("Bankslip not found with the specified id: {}", id);
@@ -99,10 +99,13 @@ public class BankSlipFacade {
             bankSlip.setDueDate(date);
 
             bankSlip.setTotalInCents(dto.getTotalInCents());
-            bankSlip.setStatus(StatusEnumType.PENDING.getName());
+            bankSlip.setStatus(StatusEnumType.valueOf(dto.getStatus()));
 
         } catch (ParseException ex){
             logger.error("Due date was sent with wrong format");
+            throw new ServiceException("Due date was sent with wrong format", HttpStatus.BAD_REQUEST);
+        } catch (Exception ex){
+            logger.error("Constant isi");
             throw new ServiceException("Due date was sent with wrong format", HttpStatus.BAD_REQUEST);
         }
 
@@ -116,7 +119,7 @@ public class BankSlipFacade {
         dto.setCustomer(bankSlip.getCustomer());
         dto.setDueDate(new SimpleDateFormat("yyyy-MM-dd").format(bankSlip.getDueDate()));
         dto.setTotalInCents(bankSlip.getTotalInCents());
-        dto.setStatus(bankSlip.getStatus());
+        dto.setStatus(bankSlip.getStatus().getName());
         Double fine = dto.getTotalInCents().doubleValue() * verifyDate(bankSlip.getDueDate());
         dto.setFine(fine);
         return dto;
@@ -140,8 +143,14 @@ public class BankSlipFacade {
         validateParameter(dto.getDueDate(), "Due date");
         validateParameter(dto.getTotalInCents(), "Total in cents");
         validateParameter(dto.getCustomer(), "Customer");
-        validateParameter(dto.getStatus(), "Status");
 
+        try {
+            StatusEnumType.valueOf(dto.getStatus());
+
+        } catch (Exception ex){
+            logger.error("Status {} don't exist.", dto.getStatus());
+            throw new ServiceException(String.format("status %s don't exist.", dto.getStatus()), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     private void validateParameter(Object props, String propName){
