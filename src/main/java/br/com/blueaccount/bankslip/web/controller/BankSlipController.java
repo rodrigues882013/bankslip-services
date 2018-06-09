@@ -18,12 +18,12 @@ public class BankSlipController {
     public BankSlipFacade facade;
 
     @PostMapping("/bankslips")
-    public ResponseEntity<BankSlipResponse> create(@RequestBody BankSlipDTO dto){
+    public ResponseEntity<BankSlipDTO> create(@RequestBody BankSlipDTO dto){
         return facade.create(dto);
     }
 
     @GetMapping("/bankslips/{id}")
-    public ResponseEntity<BankSlipResponse> findById(@PathVariable("id") String id){
+    public ResponseEntity<BankSlipDTO> findById(@PathVariable("id") String id){
         return facade.findOne(id);
     }
 
@@ -33,8 +33,8 @@ public class BankSlipController {
     }
 
     @PutMapping("bankslips/{id}")
-    public ResponseEntity<BankSlipResponse> update(@PathVariable("id") String id,
-                                                   @RequestBody StatusRequest request){
+    public ResponseEntity<BankSlipDTO> update(@PathVariable("id") String id,
+                                              @RequestBody StatusRequest request){
         return facade.update(id, request);
     }
 

@@ -24,64 +24,45 @@ public class BankSlipFacade {
     @Autowired
     public BankSlipService bankSlipService;
 
-    public ResponseEntity<BankSlipResponse> create(BankSlipDTO dto){
-        ResponseEntity<BankSlipResponse> response = null;
+    public ResponseEntity<BankSlipDTO> create(BankSlipDTO dto){
 
-        try {
-            validateRequest(dto);
-            BankSlip bankSlip = bankSlipService.create(toEntity(dto));
+        validateRequest(dto);
+        BankSlip bankSlip = bankSlipService.create(toEntity(dto));
 
-            if (bankSlip != null)
-                response = buildSuccessMessage(bankSlip, HttpStatus.CREATED);
-
-        } catch (ServiceException ex){
-            response = buildErrorMessage(ex.getReason(), ex.getCode());
+        if (bankSlip == null){
+            throw new ServiceException("Entity don't created.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return response;
+        return buildSuccessMessage(bankSlip, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<BankSlipResponse> update(String id, StatusRequest request) {
+    public ResponseEntity<BankSlipDTO> update(String id, StatusRequest request) {
         ResponseEntity<BankSlipResponse> response;
 
-        try {
-            validateParameter(request, "Status Request");
-            validateParameter(id, "id");
 
-            BankSlip bankSlip = bankSlipService.updateStatus(id, request.getStatus());
+        validateParameter(request, "Status Request");
+        validateParameter(id, "id");
 
-            if (bankSlip != null) {
-                response = buildSuccessMessage(bankSlip, HttpStatus.OK);
+        BankSlip bankSlip = bankSlipService.updateStatus(id, request.getStatus());
 
-            } else {
-                response = buildErrorMessage("Bankslip not found with the specified id", HttpStatus.NOT_FOUND);
-            }
-
-        } catch (ServiceException ex){
-            response = buildErrorMessage(ex.getReason(), ex.getCode());
+        if (bankSlip == null) {
+            throw new ServiceException("Bankslip not found with the specified id", HttpStatus.NOT_FOUND);
         }
 
-        return response;
+
+        return buildSuccessMessage(bankSlip, HttpStatus.OK);
     }
 
-    public ResponseEntity<BankSlipResponse> findOne(String id){
-        ResponseEntity<BankSlipResponse> response;
+    public ResponseEntity<BankSlipDTO> findOne(String id){
+        validateParameter(id, "id");
+        BankSlip bankSlip = bankSlipService.find(id);
 
-        try {
-            validateParameter(id, "id");
-            BankSlip bankSlip = bankSlipService.find(id);
-
-            if (bankSlip != null) {
-                response = buildSuccessMessage(bankSlip, HttpStatus.OK);
-
-            } else {
-                response = buildErrorMessage("Bankslip not found with the specified id", HttpStatus.NOT_FOUND);
-            }
-        } catch (ServiceException ex){
-            response = buildErrorMessage(ex.getReason(), ex.getCode());
+        if (bankSlip == null) {
+            throw new ServiceException("Bankslip not found with the specified id", HttpStatus.NOT_FOUND);
         }
 
-        return response;
+        return buildSuccessMessage(bankSlip, HttpStatus.OK);
+
     }
 
     public ResponseEntity<List<BankSlipDTO>> findAll(){
@@ -117,16 +98,11 @@ public class BankSlipFacade {
         return dto;
     }
 
-    private ResponseEntity<BankSlipResponse> buildSuccessMessage(BankSlip bankSlip, HttpStatus code){
-        BankSlipResponse bankSlipResponse = new BankSlipResponse(code, toDto(bankSlip));
-        return new ResponseEntity<>(bankSlipResponse, code);
+    private ResponseEntity<BankSlipDTO> buildSuccessMessage(BankSlip bankSlip, HttpStatus code){
+        return new ResponseEntity<>(toDto(bankSlip), code);
 
     }
 
-    private ResponseEntity<BankSlipResponse> buildErrorMessage(String reason, HttpStatus code){
-        BankSlipResponse bankSlipResponse = new BankSlipResponse(code, reason, null);
-        return new ResponseEntity<>(bankSlipResponse, code);
-    }
 
     private void validateRequest(BankSlipDTO dto) throws ServiceException{
 
@@ -143,7 +119,7 @@ public class BankSlipFacade {
 
     private void validateParameter(Object props, String propName){
         if (Objects.isNull(props) || StringUtils.isEmpty(props.toString())){
-            throw new ServiceException(String.format("%s is empty or null", propName), HttpStatus.BAD_REQUEST);
+            throw new ServiceException(String.format("%s is empty or null", propName), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 

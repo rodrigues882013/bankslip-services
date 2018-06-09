@@ -9,31 +9,18 @@ public class BankSlipResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private HttpStatus code;
+    private HttpStatus httpStatus;
     private String message;
-    private BankSlipDTO bankSlipDTO;
+    private Integer httpCode;
 
     public BankSlipResponse() {
     }
 
-    public BankSlipResponse(HttpStatus code, String message, BankSlipDTO bankSlipDTO) {
+    public BankSlipResponse(HttpStatus code, String message) {
         this.message = message;
-        this.code = code;
-        this.bankSlipDTO = bankSlipDTO;
+        this.httpStatus = code;
+        this.httpCode = code.value();
 
-    }
-
-    public BankSlipResponse(HttpStatus code, BankSlipDTO bankSlipDTO) {
-        this.code = code;
-        this.bankSlipDTO = bankSlipDTO;
-    }
-
-    public HttpStatus getCode() {
-        return code;
-    }
-
-    public void setCode(HttpStatus code) {
-        this.code = code;
     }
 
     public String getMessage() {
@@ -44,11 +31,20 @@ public class BankSlipResponse implements Serializable {
         this.message = message;
     }
 
-    public BankSlipDTO getBankSlipDTO() {
-        return bankSlipDTO;
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
-    public void setBankSlipDTO(BankSlipDTO bankSlipDTO) {
-        this.bankSlipDTO = bankSlipDTO;
+    public void setHttpStatus(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+        this.httpCode = httpStatus.value();
+    }
+
+    public Integer getHttpCode() {
+        return httpCode;
+    }
+
+    public void setHttpCode(Integer httpCode) {
+        this.httpCode = httpCode;
     }
 }
