@@ -2,14 +2,13 @@ package br.com.blueaccount.bankslip.web.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 public class BankSlipDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private Date dueDate;
+    private String dueDate;
     private BigDecimal totalInCents;
     private String customer;
     private String status;
@@ -23,11 +22,11 @@ public class BankSlipDTO implements Serializable {
         this.id = id;
     }
 
-    public Date getDueDate() {
+    public String getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
 

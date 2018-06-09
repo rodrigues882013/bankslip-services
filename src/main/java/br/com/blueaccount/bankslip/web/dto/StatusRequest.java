@@ -8,6 +8,9 @@ public class StatusRequest implements Serializable {
 
     private String status;
 
+    public StatusRequest() {
+    }
+
     public StatusRequest(String status) {
         this.status = status;
     }
