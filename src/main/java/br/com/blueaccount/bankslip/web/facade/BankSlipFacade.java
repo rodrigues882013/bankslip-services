@@ -17,10 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,6 +39,7 @@ public class BankSlipFacade {
             throw new ServiceException("Entity didn't created.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
+        verifyDate(bankSlip.getDueDate());
         return buildSuccessMessage(bankSlip, HttpStatus.CREATED);
     }
 
@@ -96,7 +94,7 @@ public class BankSlipFacade {
             bankSlip.setId(UUID.nameUUIDFromBytes(code.getBytes()).toString());
             bankSlip.setCustomer(dto.getCustomer());
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             Date date = format.parse(dto.getDueDate());
             bankSlip.setDueDate(date);
 
@@ -119,7 +117,8 @@ public class BankSlipFacade {
         dto.setDueDate(new SimpleDateFormat("yyyy-MM-dd").format(bankSlip.getDueDate()));
         dto.setTotalInCents(bankSlip.getTotalInCents());
         dto.setStatus(bankSlip.getStatus());
-
+        Double fine = dto.getTotalInCents().doubleValue() * verifyDate(bankSlip.getDueDate());
+        dto.setFine(fine);
         return dto;
     }
 
@@ -151,6 +150,24 @@ public class BankSlipFacade {
             logger.error("{} is empty or null", propName);
             throw new ServiceException(String.format("%s is empty or null", propName), HttpStatus.UNPROCESSABLE_ENTITY);
         }
+    }
+
+    private double verifyDate(Date date){
+        logger.info("Calculating fine");
+        Date current = new Date();
+        Calendar c = Calendar.getInstance();
+
+        if (current.after(date)){
+            Long days = (c.getTime().getTime() - date.getTime()) / (1000*60*60*24);
+
+            if (days > 10){
+                return 0.01 * days;
+            }
+
+            return 0.005 * days;
+        }
+
+        return 0;
     }
 
 
