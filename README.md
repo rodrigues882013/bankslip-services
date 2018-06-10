@@ -14,8 +14,8 @@ With the step below the application will run in develop mode, go to:
 
 And test api.
 
-You can build docker image to be deployed in some service, running:
+If you wish test the api in:
 
-    docker build -t bankslip-services .
+    http://46.101.81.106:8080/bank-slip-services/swagger-ui.html
 
-Push the image to some repository like Elastic Container Service eg.
+The api is to experiments and for this running in H2 database
