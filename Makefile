@@ -8,9 +8,9 @@ JAVA=java
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 install:
-	$(MAKE) clean install
+	$(MAVEN) clean install
 
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 run:
-    $(JAVA) -jar target/bankslip-services.jar
+	$(JAVA) -jar target/bankslip-services.jar
