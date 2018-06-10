@@ -1,5 +1,6 @@
 # bankslip-services
 
+    git clone https://github.com/rodrigues882013/bankslip-services.git
 For run application first you'll need build it:
 
     mvn clean install
