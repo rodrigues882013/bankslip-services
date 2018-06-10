@@ -14,7 +14,7 @@ With the step below the application will run in develop mode, go to:
 
 And test api.
 
-You can build a docker image to be deploy in some service, running:
+You can build docker image to be deployed in some service, running:
 
     docker build -t bankslip-services .
 
