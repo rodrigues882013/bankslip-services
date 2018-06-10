@@ -1,6 +1,7 @@
 package br.com.blueaccount.bankslip.web.controller;
 
 import br.com.blueaccount.bankslip.web.dto.BankSlipDTO;
+import br.com.blueaccount.bankslip.web.dto.BankSlipResponse;
 import br.com.blueaccount.bankslip.web.dto.StatusRequest;
 import br.com.blueaccount.bankslip.web.facade.BankSlipFacade;
 import org.slf4j.Logger;
@@ -21,12 +22,12 @@ public class BankSlipController {
     public BankSlipFacade facade;
 
     @PostMapping(value = "/bankslips")
-    public ResponseEntity<BankSlipDTO> create(@RequestBody BankSlipDTO dto){
+    public ResponseEntity<BankSlipResponse> create(@RequestBody BankSlipDTO dto){
         return facade.create(dto);
     }
 
     @GetMapping("/bankslips/{id}")
-    public ResponseEntity<BankSlipDTO> findById(@PathVariable("id") String id){
+    public ResponseEntity<BankSlipResponse> findById(@PathVariable("id") String id){
         return facade.findOne(id);
     }
 
@@ -36,7 +37,7 @@ public class BankSlipController {
     }
 
     @PutMapping("bankslips/{id}")
-    public ResponseEntity<BankSlipDTO> update(@PathVariable("id") String id,
+    public ResponseEntity<BankSlipResponse> update(@PathVariable("id") String id,
                                               @RequestBody StatusRequest request){
         return facade.update(id, request);
     }

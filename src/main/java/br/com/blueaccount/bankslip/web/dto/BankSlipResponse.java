@@ -1,26 +1,20 @@
 package br.com.blueaccount.bankslip.web.dto;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
-
 import java.io.Serializable;
 
 public class BankSlipResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private HttpStatus httpStatus;
     private String message;
-    private Integer httpCode;
+    private BankSlipDTO bankSlip;
 
     public BankSlipResponse() {
     }
 
-    public BankSlipResponse(HttpStatus code, String message) {
+    public BankSlipResponse(String message, BankSlipDTO bankSlip) {
         this.message = message;
-        this.httpStatus = code;
-        this.httpCode = code.value();
-
+        this.bankSlip = bankSlip;
     }
 
     public String getMessage() {
@@ -31,20 +25,11 @@ public class BankSlipResponse implements Serializable {
         this.message = message;
     }
 
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
+    public BankSlipDTO getBankSlip() {
+        return bankSlip;
     }
 
-    public void setHttpStatus(HttpStatus httpStatus) {
-        this.httpStatus = httpStatus;
-        this.httpCode = httpStatus.value();
-    }
-
-    public Integer getHttpCode() {
-        return httpCode;
-    }
-
-    public void setHttpCode(Integer httpCode) {
-        this.httpCode = httpCode;
+    public void setBankSlip(BankSlipDTO bankSlip) {
+        this.bankSlip = bankSlip;
     }
 }

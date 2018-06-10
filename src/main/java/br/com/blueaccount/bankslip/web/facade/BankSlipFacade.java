@@ -28,7 +28,7 @@ public class BankSlipFacade {
     @Autowired
     public BankSlipService bankSlipService;
 
-    public ResponseEntity<BankSlipDTO> create(BankSlipDTO dto){
+    public ResponseEntity<BankSlipResponse> create(BankSlipDTO dto){
         logger.info("Creating bankSplit");
 
         validateRequest(dto);
@@ -40,12 +40,11 @@ public class BankSlipFacade {
         }
 
         verifyDate(bankSlip.getDueDate());
-        return buildSuccessMessage(bankSlip, HttpStatus.CREATED);
+        return buildSuccessMessage(bankSlip, "Bankslip created", HttpStatus.CREATED);
     }
 
-    public ResponseEntity<BankSlipDTO> update(String id, StatusRequest request) {
+    public ResponseEntity<BankSlipResponse> update(String id, StatusRequest request) {
         logger.info("update: Updating bankSplit with status: `{}`", request.getStatus());
-        ResponseEntity<BankSlipResponse> response;
 
         validateParameter(request, "Status Request");
         validateParameter(id, "id");
@@ -58,10 +57,11 @@ public class BankSlipFacade {
         }
 
 
-        return buildSuccessMessage(bankSlip, HttpStatus.OK);
+        return buildSuccessMessage(bankSlip,
+                String.format("Bankslip %s", request.getStatus().toLowerCase()),HttpStatus.OK);
     }
 
-    public ResponseEntity<BankSlipDTO> findOne(String id){
+    public ResponseEntity<BankSlipResponse> findOne(String id){
         logger.info("findOne: Getting register: `{}`", id);
         validateParameter(id, "id");
         BankSlip bankSlip = bankSlipService.find(id);
@@ -71,7 +71,7 @@ public class BankSlipFacade {
             throw new ServiceException("Bankslip not found with the specified id", HttpStatus.NOT_FOUND);
         }
 
-        return buildSuccessMessage(bankSlip, HttpStatus.OK);
+        return buildSuccessMessage(bankSlip, "Ok", HttpStatus.OK);
 
     }
 
@@ -125,9 +125,13 @@ public class BankSlipFacade {
         return dto;
     }
 
-    private ResponseEntity<BankSlipDTO> buildSuccessMessage(BankSlip bankSlip, HttpStatus code){
+    private ResponseEntity<BankSlipResponse> buildSuccessMessage(BankSlip bankSlip,
+                                                                 String message,
+                                                                 HttpStatus code){
         logger.info("buildSuccessMessage: Creating success message");
-        ResponseEntity<BankSlipDTO> result = new ResponseEntity<>(toDto(bankSlip), code);
+        ResponseEntity<BankSlipResponse> result =
+                new ResponseEntity<>(new BankSlipResponse(message, toDto(bankSlip)), code);
+
         logger.info("buildSuccessMessage: Banksplit created with success.");
         return result;
     }
@@ -137,7 +141,7 @@ public class BankSlipFacade {
 
         if (dto == null){
             logger.error("Body is empty or null");
-            throw new ServiceException("Body is empty or null", HttpStatus.BAD_REQUEST);
+            throw new ServiceException("Bankslip not provided in the request body", HttpStatus.BAD_REQUEST);
         }
 
         validateParameter(dto.getDueDate(), "Due date");
@@ -157,7 +161,7 @@ public class BankSlipFacade {
         logger.info("Validating parameter: {} ", propName);
         if (Objects.isNull(props) || StringUtils.isEmpty(props.toString())){
             logger.error("{} is empty or null", propName);
-            throw new ServiceException(String.format("%s is empty or null", propName), HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ServiceException("Invalid bankslip provided.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
